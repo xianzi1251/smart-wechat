@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-plugin-comall-wechat"
+        version="1.0.0">
+  <name>wechat</name>
+  <description>Wechat Plugin, including Payment, Share and Auth</description>
+  <license>Apache 2.0</license>
+  <keywords>comall, wechat, pay, share, authentication</keywords>
+
+  <preference name="WECHAT_APP_ID" />
+
+  <js-module src="www/wechat.js" name="wechatPay">
+    <clobbers target="wechatPay" />
+  </js-module>
+
+  <!-- android -->
+  <platform name="android">
+    <hook type="after_plugin_add" src="scripts/android-install.js" />
+    <hook type="after_plugin_install" src="scripts/android-install.js" />
+    <hook type="before_plugin_rm" src="scripts/android-install.js" />
+    <hook type="before_plugin_uninstall" src="scripts/android-install.js" />
+
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="WechatPlugin">
+        <param name="android-package" value="com.comall.cordova.wechat.WechatPlugin" />
+      </feature>
+    </config-file>
+
+    <config-file target="AndroidManifest.xml" parent="/*">
+      <uses-permission android:name="android.permission.INTERNET" />
+      <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+      <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    </config-file>
+
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+      <activity android:name=".wxapi.WXEntryActivity" android:label="@string/app_name" android:exported="true" android:launchMode="singleTop" />
+    </config-file>
+
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+      <activity android:name=".wxapi.WXPayEntryActivity" android:label="@string/app_name" android:exported="true" android:launchMode="singleTop" />
+    </config-file>
+
+    <source-file src="src/android/WechatPlugin.java" target-dir="src/com/comall/cordova/wechat" />
+
+    <source-file src="src/android/libs/libammsdk.jar" target-dir="libs" />
+  </platform>
+
+  <!-- ios -->
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="WechatPlugin">
+        <param name="ios-package" value="WechatPlugin" />
+      </feature>
+    </config-file>
+
+    <config-file target="*-Info.plist" parent="LSApplicationQueriesSchemes">
+      <array>
+        <string>weixin</string>
+      </array>
+    </config-file>
+
+    <config-file target="*-Info.plist" parent="CFBundleURLTypes">
+      <array>
+        <dict>
+          <key>CFBundleURLSchemes</key>
+          <array>
+            <string>$WECHAT_APP_ID</string>
+          </array>
+        </dict>
+      </array>
+    </config-file>
+
+    <source-file src="src/ios/libWeChatSDK.a" framework="true" />
+    <header-file src="src/ios/WXApi.h" />
+    <header-file src="src/ios/WechatAuthSDK.h" />
+    <header-file src="src/ios/WXApiObject.h" />
+
+    <header-file src="src/ios/WechatPlugin.h" />
+    <source-file src="src/ios/WechatPlugin.m" />
+
+    <framework src="libc++.dylib" />
+    <framework src="libz.dylib" />
+    <framework src="libsqlite3.0.dylib" />
+    <framework src="Security.framework" />
+    <framework src="SystemConfiguration.framework" />
+    <framework src="CoreTelephony.framework" />
+
+  </platform>
+
+</plugin>
